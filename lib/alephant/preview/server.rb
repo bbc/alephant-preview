@@ -1,4 +1,6 @@
-require 'alephant/models/render_mapper'
+require 'alephant/renderer'
+require 'alephant/views'
+
 require 'alephant/models/parser'
 
 require 'alephant/preview/template/base'
@@ -11,6 +13,7 @@ require 'uri'
 module Alephant
   module Preview
     class Server < Sinatra::Base
+      DEFAULT_LOCATION = 'components'
 
       get '/preview/:id/:template/:region/?:fixture?' do
         render_preview
@@ -28,10 +31,23 @@ module Alephant
       end
 
       def render_component
-        ::Alephant::RenderMapper.new(id, base_path).create_renderer(template_file, fixture_data).render
+        ::Alephant::Renderer.create(template, base_path, model).render
       end
 
       private
+      def model
+        require model_location
+        ::Alephant::Views.get_registered_class(id).new(fixture_data)
+      end
+
+      def base_path
+        File.join(Dir.pwd, DEFAULT_LOCATION, id)
+      end
+
+      def model_location
+        File.join(base_path, 'models', "#{template}.rb")
+      end
+
       def template
         params['template']
       end
@@ -58,10 +74,6 @@ module Alephant
 
       def parser
         @parser ||= Parser.new
-      end
-
-      def base_path
-        "#{Dir.pwd}/components"
       end
 
       def fixture_location
