@@ -37,7 +37,7 @@ module Alephant
       private
       def model
         require model_location
-        ::Alephant::Views.get_registered_class(id).new(fixture_data)
+        ::Alephant::Views.get_registered_class(template).new(fixture_data)
       end
 
       def base_path
