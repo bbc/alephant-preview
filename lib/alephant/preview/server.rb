@@ -65,7 +65,9 @@ module Alephant
       end
 
       def fixture_data
-        parser.parse raw_fixture_data
+        msg = Struct.new(:body)
+          .new(raw_fixture_data)
+        parser.parse msg
       end
 
       def raw_fixture_data
