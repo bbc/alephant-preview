@@ -77,7 +77,7 @@ module Alephant
       end
 
       def fixture_location
-        "#{base_path}/#{id}/fixtures/#{fixture}.json"
+        "#{base_path}/fixtures/#{fixture}.json"
       end
 
       def preview_template_location
