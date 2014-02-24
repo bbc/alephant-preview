@@ -13,7 +13,8 @@ require 'uri'
 module Alephant
   module Preview
     class Server < Sinatra::Base
-      DEFAULT_LOCATION = 'components'
+
+      BASE_LOCATION = "#{(ENV['FIXTURE_PATH'] || Dir.pwd)}/components"
 
       get '/preview/:id/:template/:region/?:fixture?' do
         render_preview
@@ -21,6 +22,10 @@ module Alephant
 
       get '/component/:id/:template/?:fixture?' do
         render_component
+      end
+
+      get '/status' do
+        'ok'
       end
 
       def render_preview
@@ -41,7 +46,7 @@ module Alephant
       end
 
       def base_path
-        File.join(Dir.pwd, DEFAULT_LOCATION, id)
+        File.join(BASE_LOCATION, id)
       end
 
       def model_location
