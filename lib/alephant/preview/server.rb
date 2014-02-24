@@ -14,7 +14,7 @@ module Alephant
   module Preview
     class Server < Sinatra::Base
 
-      BASE_LOCATION = "#{(ENV['FIXTURE_PATH'] || Dir.pwd)}/components"
+      BASE_LOCATION = "#{(ENV['BASE_LOCATION'] || Dir.pwd)}/components"
 
       get '/preview/:id/:template/:region/?:fixture?' do
         render_preview
