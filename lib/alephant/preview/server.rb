@@ -75,7 +75,7 @@ module Alephant
       end
 
       def parser
-        @parser ||= Parser.new
+        @parser ||= ::Alephant::Support::Parser.new
       end
 
       def fixture_location
