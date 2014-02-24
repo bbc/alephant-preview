@@ -1,7 +1,7 @@
 require 'alephant/renderer'
 require 'alephant/views'
 
-require 'alephant/models/parser'
+require 'alephant/support/parser'
 
 require 'alephant/preview/template/base'
 
