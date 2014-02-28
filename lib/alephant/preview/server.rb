@@ -6,6 +6,7 @@ require 'alephant/support/parser'
 require 'alephant/preview/template/base'
 
 require 'sinatra/base'
+require "sinatra/reloader"
 require 'faraday'
 require 'json'
 require 'uri'
@@ -13,6 +14,8 @@ require 'uri'
 module Alephant
   module Preview
     class Server < Sinatra::Base
+      register Sinatra::Reloader
+      also_reload 'components/*/models/*.rb'
 
       BASE_LOCATION = "#{(ENV['BASE_LOCATION'] || Dir.pwd)}/components"
 
