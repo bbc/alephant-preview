@@ -38,9 +38,9 @@ module Alephant
       end
 
       def find_id_from_template(template)
-        files = Dir.glob(File.join(Dir.pwd, DEFAULT_LOCATION) + '/**/models/*')
+        files = Dir.glob(BASE_LOCATION + '/**/models/*')
         file = files.select! { |file| file.include? template }.pop
-        result = /#{DEFAULT_LOCATION}\/(\w+)/.match(file)
+        result = /#{BASE_LOCATION}\/(\w+)/.match(file)
         result[1]
       end
 
