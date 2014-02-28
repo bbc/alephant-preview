@@ -5,7 +5,7 @@ module Alephant
   module Preview
     module Template
       def self.path
-        "#{Dir.pwd}/components/lib"
+        ENV['PREVIEW_TEMPLATE_PATH'] || "#{Dir.pwd}/components/lib"
       end
 
       def self.update(template_location)

@@ -6,6 +6,7 @@ require 'alephant/support/parser'
 require 'alephant/preview/template/base'
 
 require 'sinatra/base'
+require "sinatra/reloader"
 require 'faraday'
 require 'json'
 require 'uri'
@@ -13,7 +14,10 @@ require 'uri'
 module Alephant
   module Preview
     class Server < Sinatra::Base
-      DEFAULT_LOCATION = 'components'
+      register Sinatra::Reloader
+      also_reload 'components/*/models/*.rb'
+
+      BASE_LOCATION = "#{(ENV['BASE_LOCATION'] || Dir.pwd)}/components"
 
       get '/preview/:id/:template/:region/?:fixture?' do
         render_preview
@@ -27,6 +31,10 @@ module Alephant
         params['id'] = find_id_from_template params['template']
         params['fixture'] = 'responsive'
         render_component
+      end
+
+      get '/status' do
+        'ok'
       end
 
       def find_id_from_template(template)
@@ -54,7 +62,7 @@ module Alephant
       end
 
       def base_path
-        File.join(Dir.pwd, DEFAULT_LOCATION, id)
+        File.join(BASE_LOCATION, id)
       end
 
       def model_location

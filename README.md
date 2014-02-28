@@ -2,6 +2,10 @@
 
 Provides an in-page preview of components during development
 
+[![Build Status](https://travis-ci.org/BBC-News/alephant-preview.png?branch=master)](https://travis-ci.org/BBC-News/alephant-preview)
+
+[![Gem Version](https://badge.fury.io/rb/alephant-preview.png)](http://badge.fury.io/rb/alephant-preview)
+
 ## Installation
 
 Add this line to your application's Gemfile:
