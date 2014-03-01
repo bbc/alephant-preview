@@ -27,8 +27,21 @@ module Alephant
         render_component
       end
 
+      get '/component/:template/?:fixture?' do
+        params['id'] = find_id_from_template params['template']
+        params['fixture'] = 'responsive'
+        render_component
+      end
+
       get '/status' do
         'ok'
+      end
+
+      def find_id_from_template(template)
+        files = Dir.glob(BASE_LOCATION + '/**/models/*')
+        file = files.select! { |file| file.include? template }.pop
+        result = /#{BASE_LOCATION}\/(\w+)/.match(file)
+        result[1]
       end
 
       def render_preview
