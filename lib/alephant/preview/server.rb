@@ -1,5 +1,6 @@
 require 'alephant/renderer'
-require 'alephant/views'
+require 'alephant/publisher/views/html'
+require 'alephant/publisher/views/json'
 
 require 'alephant/support/parser'
 
@@ -58,7 +59,7 @@ module Alephant
       private
       def model
         require model_location
-        ::Alephant::Views.get_registered_class(template).new(fixture_data)
+        ::Alephant::Publisher::Views.get_registered_class(template).new(fixture_data)
       end
 
       def base_path
