@@ -1,6 +1,6 @@
-require 'alephant/renderer'
 require 'alephant/publisher/views/html'
 require 'alephant/publisher/views/json'
+require 'alephant/publisher/view_mapper'
 
 require 'alephant/support/parser'
 
@@ -53,13 +53,13 @@ module Alephant
       end
 
       def render_component
-        ::Alephant::Renderer.create(template, base_path, model).render
+        view_mapper.generate(fixture_data)[template].render
       end
 
       private
       def model
         require model_location
-        ::Alephant::Publisher::Views.get_registered_class(template).new(fixture_data)
+        Alephant::Publisher::Views.get_registered_class(template).new(fixture_data)
       end
 
       def base_path
@@ -107,6 +107,11 @@ module Alephant
       def preview_template_location
         "#{Template.path}/templates/preview.mustache"
       end
+
+      def view_mapper
+        Alephant::Publisher::ViewMapper.new(id, BASE_LOCATION)
+      end
+
     end
   end
 end
