@@ -33,5 +33,5 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'mustache', '>= 0.99.5'
 
   spec.add_runtime_dependency 'alephant-support'
-  spec.add_runtime_dependency 'alephant-publisher'
+  spec.add_runtime_dependency 'alephant-renderer'
 end
