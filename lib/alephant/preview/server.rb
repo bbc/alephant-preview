@@ -15,6 +15,8 @@ require 'uri'
 module Alephant
   module Preview
     class Server < Sinatra::Base
+      set :bind, '0.0.0.0'
+
       register Sinatra::Reloader
       also_reload 'components/*/models/*.rb'
 
