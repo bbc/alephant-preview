@@ -9,4 +9,3 @@ ENV['RACK_ENV']              = 'test'
 require 'pry'
 require 'rack/test'
 require 'alephant/preview'
-
