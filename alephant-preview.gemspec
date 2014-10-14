@@ -34,4 +34,6 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency 'alephant-support'
   spec.add_runtime_dependency 'alephant-renderer'
+  spec.add_runtime_dependency 'alephant-publisher-request'
+
 end
