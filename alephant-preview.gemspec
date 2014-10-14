@@ -21,10 +21,11 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "rspec-nc"
   spec.add_development_dependency "rack-test"
   spec.add_development_dependency "guard"
-  spec.add_development_dependency "guard-rspec"
+  spec.add_development_dependency "guard-rake"
   spec.add_development_dependency "pry"
   spec.add_development_dependency "bundler"
   spec.add_development_dependency "rake"
+  spec.add_development_dependency "rake-rspec"
 
   spec.add_runtime_dependency 'sinatra'
   spec.add_runtime_dependency 'sinatra-reloader'
@@ -34,4 +35,6 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency 'alephant-support'
   spec.add_runtime_dependency 'alephant-renderer'
+  spec.add_runtime_dependency 'alephant-publisher-request'
+
 end
