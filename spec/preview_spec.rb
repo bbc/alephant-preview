@@ -19,26 +19,27 @@ describe Alephant::Preview::Server do
   end
 
   describe '/component/:id/:template/?:fixture?' do
-    let (:id) { 'foo' }
-    let (:template) { 'foo' }
-    let (:fixture) { 'foo' }
-    before(:each) do
-      get "/component/#{id}/#{template}/#{fixture}"
-    end
 
     describe 'content' do
+      before(:each) do
+        get "/component/#{id}/#{template}/#{fixture}"
+      end
+      let (:response) { last_response.body.chomp }
+
       context 'without data mapper' do
-        specify { expect(last_response.body.chomp).to eq("content") }
+        let (:id) { 'foo' }
+        let (:template) { 'foo' }
+        let (:fixture) { 'foo' }
+
+        specify { expect(response).to eq("content") }
       end
 
       context 'with data mapper' do
         let (:id) { 'bar' }
         let (:template) { 'bar' }
         let (:fixture) { 'bar' }
-        before(:each) do
-          get "/component/#{id}/#{template}/#{fixture}"
-        end
-        specify { expect(last_response.body.chomp).to eq("data mapped content") }
+
+        specify { expect(response).to eq("data mapped content") }
       end
     end
   end
