@@ -1,9 +1,12 @@
 require 'alephant/renderer/views/html'
 require 'alephant/renderer/views/json'
 require 'alephant/renderer/view_mapper'
+require 'alephant/publisher/request/data_mapper_factory'
+require 'alephant/publisher/request/data_mapper'
+require 'alephant/publisher/request/error'
 
 require 'alephant/support/parser'
-
+require 'alephant/preview/fixture_loader'
 require 'alephant/preview/template/base'
 
 require 'sinatra/base'
@@ -19,6 +22,7 @@ module Alephant
 
       register Sinatra::Reloader
       also_reload 'components/*/models/*.rb'
+      also_reload 'components/*/mapper.rb'
 
       BASE_LOCATION = "#{(ENV['BASE_LOCATION'] || Dir.pwd)}/components"
 
@@ -89,9 +93,22 @@ module Alephant
       end
 
       def fixture_data
-        msg = Struct.new(:body)
-          .new(raw_fixture_data)
-        parser.parse msg
+        if File.exists? "#{base_path}/mapper.rb"
+          loader              = Alephant::Preview::FixtureLoader.new(raw_fixture_data)
+          data_mapper_factory = Alephant::Publisher::Request::DataMapperFactory.new(loader, BASE_LOCATION)
+          begin
+            mapper              = data_mapper_factory.create(id, {})
+            mapper.data
+          rescue Alephant::Publisher::Request::InvalidApiResponse
+            raise "The JSON passed to the data mapper isn't valid"
+          rescue StandardError => e
+            raise "There was an issue with the data mapper class: #{e.message}"
+          end
+        else
+          msg = Struct.new(:body)
+            .new(raw_fixture_data)
+          parser.parse msg
+        end
       end
 
       def raw_fixture_data
