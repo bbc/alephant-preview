@@ -23,6 +23,7 @@ module Alephant
       register Sinatra::Reloader
       also_reload 'components/*/models/*.rb'
       also_reload 'components/*/mapper.rb'
+      also_reload 'components/shared/mappers/*.rb'
 
       BASE_LOCATION = "#{(ENV['BASE_LOCATION'] || Dir.pwd)}/components"
 
