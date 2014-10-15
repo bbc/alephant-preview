@@ -32,8 +32,8 @@ describe Alephant::Preview::Server do
 
       context 'without a data mapper' do
         let (:id) { 'foo' }
-        let (:template) { 'foo' }
-        let (:fixture) { 'foo' }
+        let (:template) { id }
+        let (:fixture) { id }
 
         specify { expect(response).to eq("content") }
       end
@@ -42,16 +42,16 @@ describe Alephant::Preview::Server do
 
         context 'using a single fixture' do
           let (:id) { 'bar' }
-          let (:template) { 'bar' }
-          let (:fixture) { 'bar' }
+          let (:template) { id }
+          let (:fixture) { id }
 
           specify { expect(response).to eq("data mapped content") }
         end
 
         context 'using multiple fixtures' do
           let (:id) { 'baz' }
-          let (:template) { 'baz' }
-          let (:fixture) { 'baz' }
+          let (:template) { id }
+          let (:fixture) { id }
 
           specify { expect(response).to eq("multiple endpoint data mapped content") }
         end
