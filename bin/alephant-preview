@@ -5,8 +5,10 @@ require 'trollop'
 
 root = Pathname.new(__FILE__).dirname.parent
 lib_path = (root + 'lib').realdirpath
+current_dir = File.join(Dir.pwd, "lib")
 
 $LOAD_PATH.unshift(lib_path)
+$LOAD_PATH.unshift(current_dir)
 
 require 'alephant/preview'
 require 'alephant/preview/tasks'
