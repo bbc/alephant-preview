@@ -98,8 +98,7 @@ module Alephant
           loader              = Alephant::Preview::FixtureLoader.new(base_path)
           data_mapper_factory = Alephant::Publisher::Request::DataMapperFactory.new(loader, BASE_LOCATION)
           begin
-            mapper              = data_mapper_factory.create(id, {})
-            mapper.data
+            data_mapper_factory.create(id, params).data
           rescue Alephant::Publisher::Request::InvalidApiResponse
             raise "The JSON passed to the data mapper isn't valid"
           rescue StandardError => e
