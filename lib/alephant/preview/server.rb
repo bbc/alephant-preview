@@ -94,7 +94,7 @@ module Alephant
 
       def fixture_data
         if File.exists? "#{base_path}/mapper.rb"
-          loader              = Alephant::Preview::FixtureLoader.new(raw_fixture_data)
+          loader              = Alephant::Preview::FixtureLoader.new(base_path)
           data_mapper_factory = Alephant::Publisher::Request::DataMapperFactory.new(loader, BASE_LOCATION)
           begin
             mapper              = data_mapper_factory.create(id, {})
@@ -102,6 +102,7 @@ module Alephant
           rescue Alephant::Publisher::Request::InvalidApiResponse
             raise "The JSON passed to the data mapper isn't valid"
           rescue StandardError => e
+            puts e.backtrace
             raise "There was an issue with the data mapper class: #{e.message}"
           end
         else
