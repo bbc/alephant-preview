@@ -19,6 +19,8 @@ module Alephant
   module Preview
     class Server < Sinatra::Base
       set :bind, '0.0.0.0'
+      port = ENV['PORT'] || 4567
+      set :port, port
 
       register Sinatra::Reloader
       also_reload 'components/*/models/*.rb'
