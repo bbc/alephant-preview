@@ -4,24 +4,6 @@ describe Alephant::Preview::Server do
   include Rack::Test::Methods
   let (:app) { subject }
 
-  describe 'preview endpoint (GET /preview/{id}/{template}/{region}/{fixture})' do
-
-    describe 'content' do
-
-      context 'with valid data' do
-        before(:each) do
-          get "/preview/#{id}/#{template}/#{region}/#{fixture}"
-        end
-        let (:id) { 'foo' }
-        let (:template) { id }
-        let (:fixture) { id }
-        let (:region) { 'page_region' }
-
-        specify { expect(last_response.body).to eq("topcontent\nbottom\n") }
-      end
-    end
-  end
-
   describe 'component endpoint (GET /component/{id}/{template}/{fixture})' do
 
     describe 'content' do
