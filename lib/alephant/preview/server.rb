@@ -7,7 +7,6 @@ require 'alephant/publisher/request/error'
 
 require 'alephant/support/parser'
 require 'alephant/preview/fixture_loader'
-require 'alephant/preview/template/base'
 
 require 'sinatra/base'
 require "sinatra/reloader"
@@ -26,10 +25,6 @@ module Alephant
       also_reload 'components/shared/mappers/*.rb'
 
       BASE_LOCATION = "#{(ENV['BASE_LOCATION'] || Dir.pwd)}/components"
-
-      get '/preview/:id/:template/:region/?:fixture?' do
-        render_preview
-      end
 
       get '/component/:id/:template/?:fixture?' do
         render_component
@@ -50,13 +45,6 @@ module Alephant
         file = files.select! { |file| file.include? "/#{template}.rb" }.pop
         result = /#{BASE_LOCATION}\/(\w+)/.match(file)
         result[1]
-      end
-
-      def render_preview
-        Template::Base.new(
-          { region => render_component },
-          preview_template_location
-        ).render
       end
 
       def render_component
