@@ -33,7 +33,7 @@ module Alephant
 
       get '/component/:template/?:fixture?' do
         params['id'] = find_id_from_template params['template']
-        params['fixture'] = 'responsive' unless params['template']
+        params['fixture'] = 'responsive' unless params['fixture']
         render_component
       end
 
