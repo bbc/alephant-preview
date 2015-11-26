@@ -31,13 +31,13 @@ module Alephant
         render_preview
       end
 
-      get '/component/:id/:template/?:fixture?' do
+      get '/component/:template/?:fixture?' do
+        params['id'] = find_id_from_template params['template']
+        params['fixture'] = 'responsive' unless params['template']
         render_component
       end
 
-      get '/component/:template/?:fixture?' do
-        params['id'] = find_id_from_template params['template']
-        params['fixture'] = 'responsive'
+      get '/component/:id/:template/?:fixture?' do
         render_component
       end
 
