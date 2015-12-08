@@ -33,7 +33,7 @@ Gem::Specification.new do |spec|
   spec.add_runtime_dependency 'trollop'
 
   spec.add_runtime_dependency 'alephant-support'
-  spec.add_runtime_dependency 'alephant-renderer', '2.0.1'
+  spec.add_runtime_dependency 'alephant-renderer', '2.0.2'
   spec.add_runtime_dependency 'alephant-publisher-request'
 
 end
