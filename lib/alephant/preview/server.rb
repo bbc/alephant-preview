@@ -49,9 +49,10 @@ module Alephant
         batch_components = []
 
         ((JSON.parse(request.body.read, :symbolize_names => true) || {}).fetch(:components, [])).each do |component|
+          options = component.fetch(:options, {}) || {}
           params["template"] = component.fetch(:component)
           params["id"] = find_id_from_template params["template"]
-          params["fixture"] = "responsive"
+          params["fixture"] = options.fetch(:fixture, "responsive") || "responsive"
           batch_components << render_batch_component
         end
 
