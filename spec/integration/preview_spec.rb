@@ -82,6 +82,8 @@ describe Alephant::Preview::Server do
           let (:id) { "bar" }
 
           expected = { :components => [ { :component => "bar", :options => {}, :status => 200, :body => "data mapped content\n" } ] }
+
+          specify { expect(response).to eq(expected) }
         end
 
         context "using multiple fixtures" do
