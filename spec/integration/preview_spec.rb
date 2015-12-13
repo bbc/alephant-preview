@@ -84,7 +84,7 @@ describe Alephant::Preview::Server do
           expected = { :components => [ { :component => "bar", :options => {}, :status => 200, :body => "data mapped content\n" } ] }
         end
 
-        context 'using multiple fixtures' do
+        context "using multiple fixtures" do
           let (:id) { "baz" }
 
           expected = { :components => [ { :component => "baz", :options => {}, :status => 200, :body => "multiple endpoint data mapped content\n" } ] }
