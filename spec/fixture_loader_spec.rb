@@ -41,7 +41,8 @@ describe Alephant::Preview::FixtureLoader do
       context 'using incorrect amount of fixtures' do
         it "should raise an exception" do
           (0..2).each { |index| subject.get(uri).body }
-          expect{ subject.get(uri).body }.to raise_error(RuntimeError, "There isn't a fixture matching the request call, please add one")
+          expect{ subject.get(uri).body }.to raise_error(RuntimeError,
+            "There isn't a fixture matching the request call, please add one")
         end
       end
     end
