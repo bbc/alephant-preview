@@ -63,7 +63,16 @@ describe Alephant::Preview::Server do
 
     describe "content" do
       before(:each) do
-        post "/components/batch", { :components => [ { :component => id, :options => { :fixture => id } } ] }.to_json
+        post "/components/batch", {
+          :components => [
+            {
+              :component => id,
+              :options => {
+                :fixture => id
+              }
+            }
+          ]
+        }.to_json
       end
 
       let (:response) { JSON.parse(last_response.body.chomp, :symbolize_names => true) }
@@ -71,7 +80,16 @@ describe Alephant::Preview::Server do
       context "without a data mapper" do
         let(:id) { "foo" }
 
-        expected = { :components => [ { :component => "foo", :options => {}, :status => 200, :body => "content\n" } ] }
+        expected = {
+          :components => [
+            {
+              :component => "foo",
+              :options => {},
+              :status => 200,
+              :body => "content\n"
+            }
+          ]
+        }
 
         specify { expect(response).to eq(expected) }
       end
@@ -81,7 +99,16 @@ describe Alephant::Preview::Server do
         context "using a single fixture" do
           let (:id) { "bar" }
 
-          expected = { :components => [ { :component => "bar", :options => {}, :status => 200, :body => "data mapped content\n" } ] }
+          expected = {
+            :components => [
+              {
+                :component => "bar",
+                :options => {},
+                :status => 200,
+                :body => "data mapped content\n"
+              }
+            ]
+          }
 
           specify { expect(response).to eq(expected) }
         end
@@ -89,7 +116,16 @@ describe Alephant::Preview::Server do
         context "using multiple fixtures" do
           let (:id) { "baz" }
 
-          expected = { :components => [ { :component => "baz", :options => {}, :status => 200, :body => "multiple endpoint data mapped content\n" } ] }
+          expected = {
+            :components => [
+              {
+                :component => "baz",
+                :options => {},
+                :status => 200,
+                :body => "multiple endpoint data mapped content\n"
+              }
+            ]
+          }
 
           specify { expect(response).to eq(expected) }
         end
