@@ -48,7 +48,7 @@ module Alephant
       post "/components/batch" do
         batch_components = []
 
-        ((JSON.parse(request.body.read, :symbolize_names => true) || {}).fetch(:components, [])).each do |component|
+        batched_components.each do |component|
           options = component.fetch(:options, {}) || {}
           params["template"] = component.fetch(:component)
           params["id"] = find_id_from_template params["template"]
@@ -93,6 +93,15 @@ module Alephant
       end
 
       private
+
+      def request_body
+        JSON.parse(request.body.read, :symbolize_names => true) || {}
+      end
+
+      def batched_components
+        request_body.fetch(:components, [])
+      end
+
       def model
         require model_location
         Alephant::Renderer::Views.get_registered_class(template).new(fixture_data)
