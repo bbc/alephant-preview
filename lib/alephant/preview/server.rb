@@ -56,9 +56,7 @@ module Alephant
           batch_components << render_batch_component
         end
 
-        {
-          :components => batch_components
-        }.to_json
+        { :components => batch_components }.to_json
       end
 
       get '/status' do
