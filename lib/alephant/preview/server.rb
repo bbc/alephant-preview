@@ -84,9 +84,9 @@ module Alephant
       def render_batch_component
         {
           :component => template,
-          :options => {},
-          :status => 200,
-          :body => render_component
+          :options   => {},
+          :status    => 200,
+          :body      => render_component
         }
       end
 
