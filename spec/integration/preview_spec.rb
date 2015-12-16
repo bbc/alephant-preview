@@ -67,7 +67,7 @@ describe Alephant::Preview::Server do
           :components => [
             {
               :component => id,
-              :options => {
+              :options   => {
                 :fixture => id
               }
             }
@@ -84,9 +84,9 @@ describe Alephant::Preview::Server do
           :components => [
             {
               :component => "foo",
-              :options => {},
-              :status => 200,
-              :body => "content\n"
+              :options   => {},
+              :status    => 200,
+              :body      => "content\n"
             }
           ]
         }
@@ -103,9 +103,9 @@ describe Alephant::Preview::Server do
             :components => [
               {
                 :component => "bar",
-                :options => {},
-                :status => 200,
-                :body => "data mapped content\n"
+                :options   => {},
+                :status    => 200,
+                :body      => "data mapped content\n"
               }
             ]
           }
@@ -120,9 +120,9 @@ describe Alephant::Preview::Server do
             :components => [
               {
                 :component => "baz",
-                :options => {},
-                :status => 200,
-                :body => "multiple endpoint data mapped content\n"
+                :options   => {},
+                :status    => 200,
+                :body      => "multiple endpoint data mapped content\n"
               }
             ]
           }
