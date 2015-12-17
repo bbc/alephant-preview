@@ -27,6 +27,10 @@ module Alephant
 
       BASE_LOCATION = "#{(ENV['BASE_LOCATION'] || Dir.pwd)}/components"
 
+      before do
+        response["Access-Control-Allow-Origin"] = "*"
+      end
+
       get '/preview/:id/:template/:region/?:fixture?' do
         render_preview
       end
@@ -39,6 +43,20 @@ module Alephant
 
       get '/component/:id/:template/?:fixture?' do
         render_component
+      end
+
+      post "/components/batch" do
+        batch_components = []
+
+        batched_components.each do |component|
+          options = component.fetch(:options, {}) || {}
+          params["template"] = component.fetch(:component)
+          params["id"] = find_id_from_template params["template"]
+          params["fixture"] = options.fetch(:fixture, "responsive") || "responsive"
+          batch_components << render_batch_component
+        end
+
+        { :components => batch_components }.to_json
       end
 
       get '/status' do
@@ -63,7 +81,25 @@ module Alephant
         view_mapper.generate(fixture_data)[template].render
       end
 
+      def render_batch_component
+        {
+          :component => template,
+          :options   => {},
+          :status    => 200,
+          :body      => render_component
+        }
+      end
+
       private
+
+      def request_body
+        JSON.parse(request.body.read, :symbolize_names => true) || {}
+      end
+
+      def batched_components
+        request_body.fetch(:components, [])
+      end
+
       def model
         require model_location
         Alephant::Renderer::Views.get_registered_class(template).new(fixture_data)

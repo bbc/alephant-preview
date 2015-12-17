@@ -59,6 +59,80 @@ describe Alephant::Preview::Server do
     end
   end
 
+  describe "component batch endpoint (POST /components/batch" do
+
+    describe "content" do
+      before(:each) do
+        post "/components/batch", {
+          :components => [
+            {
+              :component => id,
+              :options   => {
+                :fixture => id
+              }
+            }
+          ]
+        }.to_json
+      end
+
+      let (:response) { JSON.parse(last_response.body.chomp, :symbolize_names => true) }
+
+      context "without a data mapper" do
+        let(:id) { "foo" }
+
+        expected = {
+          :components => [
+            {
+              :component => "foo",
+              :options   => {},
+              :status    => 200,
+              :body      => "content\n"
+            }
+          ]
+        }
+
+        specify { expect(response).to eq(expected) }
+      end
+
+      context "with a data mapper" do
+
+        context "using a single fixture" do
+          let (:id) { "bar" }
+
+          expected = {
+            :components => [
+              {
+                :component => "bar",
+                :options   => {},
+                :status    => 200,
+                :body      => "data mapped content\n"
+              }
+            ]
+          }
+
+          specify { expect(response).to eq(expected) }
+        end
+
+        context "using multiple fixtures" do
+          let (:id) { "baz" }
+
+          expected = {
+            :components => [
+              {
+                :component => "baz",
+                :options   => {},
+                :status    => 200,
+                :body      => "multiple endpoint data mapped content\n"
+              }
+            ]
+          }
+
+          specify { expect(response).to eq(expected) }
+        end
+      end
+    end
+  end
+
   describe "status endpoint (GET /status)" do
     before(:each) do
       get "/status"
