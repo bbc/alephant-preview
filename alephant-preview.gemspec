@@ -6,8 +6,8 @@ require 'alephant/preview/version'
 Gem::Specification.new do |spec|
   spec.name          = "alephant-preview"
   spec.version       = Alephant::Preview::VERSION
-  spec.authors       = ["Robert Kenny"]
-  spec.email         = ["kenoir@gmail.com"]
+  spec.authors       = ["BBC News"]
+  spec.email         = ["FutureMediaNewsRubyGems@bbc.co.uk"]
   spec.summary       = "Preview component templates"
   spec.homepage      = ""
   spec.license       = "MIT"

@@ -1,5 +1,5 @@
 module Alephant
   module Preview
-    VERSION = "0.3.3"
+    VERSION = "0.3.7"
   end
 end
