@@ -49,7 +49,7 @@ module Alephant
         batch_components = []
 
         batched_components.each do |component|
-          options = component.fetch(:options, {}) || {}
+          options = symbolize(component.fetch(:options, {}) || {})
           params["template"] = component.fetch(:component)
           params["id"] = find_id_from_template params["template"]
           params["fixture"] = options.fetch(:fixture, "responsive") || "responsive"
@@ -168,6 +168,9 @@ module Alephant
         Alephant::Renderer::ViewMapper.new(id, BASE_LOCATION)
       end
 
+      def symbolize(hash)
+        Hash[hash.map { |k, v| [k.to_sym, v] }]
+      end
     end
   end
 end
