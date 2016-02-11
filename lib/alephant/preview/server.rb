@@ -49,7 +49,7 @@ module Alephant
         batch_components = []
 
         batched_components.each do |component|
-          options = symbolize(component.fetch(:options, {}) || {})
+          options = symbolize component.fetch(:options, {})
           params["template"] = component.fetch(:component)
           params["id"] = find_id_from_template params["template"]
           params["fixture"] = options.fetch(:fixture, "responsive") || "responsive"
