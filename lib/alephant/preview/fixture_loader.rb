@@ -8,7 +8,7 @@ module Alephant
         @fixtures  = Dir.glob("#{base_path}/fixtures/*")
       end
 
-      def get(uri)
+      def get(_uri)
         OpenStruct.new(
           :status => 200,
           :body   => fixture
@@ -22,7 +22,6 @@ module Alephant
         raise "There isn't a fixture matching the request call, please add one" if path.nil?
         File.open(path).read
       end
-
     end
   end
 end

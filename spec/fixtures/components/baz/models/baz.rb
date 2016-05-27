@@ -1,4 +1,4 @@
-require 'alephant/renderer/views/html'
+require "alephant/renderer/views/html"
 
 module MyApp
   class Baz < ::Alephant::Renderer::Views::Html

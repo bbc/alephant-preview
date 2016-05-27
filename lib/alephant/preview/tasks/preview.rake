@@ -1,5 +1,5 @@
-require 'alephant/preview/server'
-require 'alephant/preview/template'
+require "alephant/preview/server"
+require "alephant/preview/template"
 
 namespace :alephant do
   namespace :preview do
@@ -13,4 +13,3 @@ namespace :alephant do
     end
   end
 end
-

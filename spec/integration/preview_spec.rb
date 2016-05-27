@@ -1,55 +1,51 @@
-require 'spec_helper'
+require "spec_helper"
 
 describe Alephant::Preview::Server do
   include Rack::Test::Methods
   let (:app) { subject }
 
-  describe 'preview endpoint (GET /preview/{id}/{template}/{region}/{fixture})' do
-
-    describe 'content' do
-
-      context 'with valid data' do
+  describe "preview endpoint (GET /preview/{id}/{template}/{region}/{fixture})" do
+    describe "content" do
+      context "with valid data" do
         before(:each) do
           get "/preview/#{id}/#{template}/#{region}/#{fixture}"
         end
-        let (:id) { 'foo' }
+        let (:id) { "foo" }
         let (:template) { id }
         let (:fixture) { id }
-        let (:region) { 'page_region' }
+        let (:region) { "page_region" }
 
         specify { expect(last_response.body).to eq("topcontent\nbottom\n") }
       end
     end
   end
 
-  describe 'component endpoint (GET /component/{id}/{template}/{fixture})' do
-
-    describe 'content' do
+  describe "component endpoint (GET /component/{id}/{template}/{fixture})" do
+    describe "content" do
       before(:each) do
         get "/component/#{id}/#{template}/#{fixture}"
       end
       let (:response) { last_response.body.chomp }
 
-      context 'without a data mapper' do
-        let (:id) { 'foo' }
+      context "without a data mapper" do
+        let (:id) { "foo" }
         let (:template) { id }
         let (:fixture) { id }
 
         specify { expect(response).to eq("content") }
       end
 
-      context 'with a data mapper' do
-
-        context 'using a single fixture' do
-          let (:id) { 'bar' }
+      context "with a data mapper" do
+        context "using a single fixture" do
+          let (:id) { "bar" }
           let (:template) { id }
           let (:fixture) { id }
 
           specify { expect(response).to eq("data mapped content") }
         end
 
-        context 'using multiple fixtures' do
-          let (:id) { 'baz' }
+        context "using multiple fixtures" do
+          let (:id) { "baz" }
           let (:template) { id }
           let (:fixture) { id }
 
@@ -60,16 +56,15 @@ describe Alephant::Preview::Server do
   end
 
   describe 'component batch endpoint (GET /components/batch?components[#{id}]=#{id})' do
-
-    describe 'content' do
+    describe "content" do
       before(:each) do
         get "/components/batch?components[#{id}][component]=#{id}&components[#{id}][options][fixture]=#{id}"
       end
 
       let (:response) { JSON.parse(last_response.body.chomp, :symbolize_names => true) }
 
-      context 'without a data mapper' do
-        let (:id) { 'foo' }
+      context "without a data mapper" do
+        let (:id) { "foo" }
         let (:template) { id }
         let (:fixture) { id }
 
@@ -87,10 +82,9 @@ describe Alephant::Preview::Server do
         specify { expect(response).to eq(expected) }
       end
 
-      context 'with a data mapper' do
-
-        context 'using a single fixture' do
-          let (:id) { 'bar' }
+      context "with a data mapper" do
+        context "using a single fixture" do
+          let (:id) { "bar" }
           let (:template) { id }
           let (:fixture) { id }
 
@@ -108,8 +102,8 @@ describe Alephant::Preview::Server do
           specify { expect(response).to eq(expected) }
         end
 
-        context 'using multiple fixtures' do
-          let (:id) { 'baz' }
+        context "using multiple fixtures" do
+          let (:id) { "baz" }
           let (:template) { id }
           let (:fixture) { id }
 
@@ -131,7 +125,6 @@ describe Alephant::Preview::Server do
   end
 
   describe "component batch endpoint (POST /components/batch" do
-
     describe "content" do
       before(:each) do
         post "/components/batch", {
@@ -166,7 +159,6 @@ describe Alephant::Preview::Server do
       end
 
       context "with a data mapper" do
-
         context "using a single fixture" do
           let (:id) { "bar" }
 
