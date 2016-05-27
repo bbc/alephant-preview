@@ -45,10 +45,25 @@ module Alephant
         render_component
       end
 
+      get "/components/batch" do
+        batch_components = []
+
+        get_batched_components.each do |component|
+          component = component[1]
+          options = component.fetch("options", {})
+          params["template"] = component.fetch("component")
+          params["id"] = find_id_from_template params["template"]
+          params["fixture"] = options.fetch("fixture", "responsive") || "responsive"
+          batch_components << render_batch_component
+        end
+
+        { :components => batch_components }.to_json
+      end
+
       post "/components/batch" do
         batch_components = []
 
-        batched_components.each do |component|
+        post_batched_components.each do |component|
           options = symbolize component.fetch(:options, {})
           params["template"] = component.fetch(:component)
           params["id"] = find_id_from_template params["template"]
@@ -105,8 +120,16 @@ module Alephant
         JSON.parse(request.body.read, :symbolize_names => true) || {}
       end
 
-      def batched_components
+      def query_string
+        Rack::Utils.parse_nested_query(request.query_string)
+      end
+
+      def post_batched_components
         request_body.fetch(:components, [])
+      end
+
+      def get_batched_components
+        query_string.fetch("components", [])
       end
 
       def model
