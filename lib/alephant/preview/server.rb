@@ -1,54 +1,69 @@
-require 'alephant/renderer/views/html'
-require 'alephant/renderer/views/json'
-require 'alephant/renderer/view_mapper'
-require 'alephant/publisher/request/data_mapper_factory'
-require 'alephant/publisher/request/data_mapper'
-require 'alephant/publisher/request/error'
+require "alephant/renderer/views/html"
+require "alephant/renderer/views/json"
+require "alephant/renderer/view_mapper"
+require "alephant/publisher/request/data_mapper_factory"
+require "alephant/publisher/request/data_mapper"
+require "alephant/publisher/request/error"
 
-require 'alephant/support/parser'
-require 'alephant/preview/fixture_loader'
-require 'alephant/preview/template/base'
+require "alephant/support/parser"
+require "alephant/preview/fixture_loader"
+require "alephant/preview/template/base"
 
-require 'sinatra/base'
+require "sinatra/base"
 require "sinatra/reloader"
-require 'faraday'
-require 'json'
-require 'uri'
+require "faraday"
+require "json"
+require "uri"
 
 module Alephant
   module Preview
     class Server < Sinatra::Base
-      set :bind, '0.0.0.0'
+      set :bind, "0.0.0.0"
 
       register Sinatra::Reloader
-      also_reload 'components/*/models/*.rb'
-      also_reload 'components/*/mapper.rb'
-      also_reload 'components/shared/mappers/*.rb'
+      also_reload "components/*/models/*.rb"
+      also_reload "components/*/mapper.rb"
+      also_reload "components/shared/mappers/*.rb"
 
-      BASE_LOCATION = "#{(ENV['BASE_LOCATION'] || Dir.pwd)}/components"
+      BASE_LOCATION = "#{(ENV['BASE_LOCATION'] || Dir.pwd)}/components".freeze
 
       before do
         response["Access-Control-Allow-Origin"] = "*"
       end
 
-      get '/preview/:id/:template/:region/?:fixture?' do
+      get "/preview/:id/:template/:region/?:fixture?" do
         render_preview
       end
 
-      get '/component/:template/?:fixture?' do
-        params['id'] = find_id_from_template params['template']
-        params['fixture'] = 'responsive' unless params['fixture']
+      get "/component/:template/?:fixture?" do
+        params["id"] = find_id_from_template params["template"]
+        params["fixture"] = "responsive" unless params["fixture"]
         render_component
       end
 
-      get '/component/:id/:template/?:fixture?' do
+      get "/component/:id/:template/?:fixture?" do
         render_component
+      end
+
+      get "/components/batch" do
+        batch_components = []
+
+        get_batched_components.each do |component|
+          component = component[1]
+          options = component.fetch("options", {})
+          params["template"] = component.fetch("component")
+          params["id"] = find_id_from_template params["template"]
+          params["fixture"] = options.fetch("fixture", "responsive") || "responsive"
+          batch_components << render_batch_component
+        end
+
+        { :components => batch_components }.to_json
       end
 
       post "/components/batch" do
         batch_components = []
 
-        batched_components.each do |component|
+        post_batched_components.each do |component|
           options = symbolize component.fetch(:options, {})
           params["template"] = component.fetch(:component)
           params["id"] = find_id_from_template params["template"]
@@ -59,21 +74,19 @@ module Alephant
         { :components => batch_components }.to_json
       end
 
-      get '/status' do
-        'ok'
+      get "/status" do
+        "ok"
       end
 
       not_found do
-        'Not found'
+        "Not found"
       end
 
       def find_id_from_template(template)
-        files = Dir.glob(BASE_LOCATION + '/**/models/*')
+        files = Dir.glob(BASE_LOCATION + "/**/models/*")
         file = files.select! { |file| file.include? "/#{template}.rb" }.pop
 
-        if file.nil?
-          halt(404)
-        end
+        halt(404) if file.nil?
 
         result = /#{BASE_LOCATION}\/(\w+)/.match(file)
         result[1]
@@ -105,8 +118,16 @@ module Alephant
         JSON.parse(request.body.read, :symbolize_names => true) || {}
       end
 
-      def batched_components
+      def query_string
+        Rack::Utils.parse_nested_query(request.query_string)
+      end
+
+      def post_batched_components
         request_body.fetch(:components, [])
+      end
+
+      def get_batched_components
+        query_string.fetch("components", [])
       end
 
       def model
@@ -119,27 +140,27 @@ module Alephant
       end
 
       def model_location
-        File.join(base_path, 'models', "#{template}.rb")
+        File.join(base_path, "models", "#{template}.rb")
       end
 
       def template
-        params['template']
+        params["template"]
       end
 
       def region
-        params['region']
+        params["region"]
       end
 
       def id
-        params['id']
+        params["id"]
       end
 
       def fixture
-        params['fixture'] || id
+        params["fixture"] || id
       end
 
       def fixture_data
-        if File.exists? "#{base_path}/mapper.rb"
+        if File.exist? "#{base_path}/mapper.rb"
           loader              = Alephant::Preview::FixtureLoader.new(base_path)
           data_mapper_factory = Alephant::Publisher::Request::DataMapperFactory.new(loader, BASE_LOCATION)
           begin
@@ -152,7 +173,7 @@ module Alephant
           end
         else
           msg = Struct.new(:body)
-            .new(raw_fixture_data)
+                      .new(raw_fixture_data)
           parser.parse msg
         end
       end

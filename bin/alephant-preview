@@ -1,20 +1,20 @@
 #!/usr/bin/env RUBYOPT=-Ku ruby
 
-require 'pathname'
-require 'trollop'
+require "pathname"
+require "trollop"
 
 root = Pathname.new(__FILE__).dirname.parent
-lib_path = (root + 'lib').realdirpath
+lib_path = (root + "lib").realdirpath
 current_dir = File.join(Dir.pwd, "lib")
 
 $LOAD_PATH.unshift(lib_path)
 $LOAD_PATH.unshift(current_dir)
 
-require 'alephant/preview'
-require 'alephant/preview/tasks'
+require "alephant/preview"
+require "alephant/preview/tasks"
 
-SUB_COMMANDS = %w(preview)
-global_opts = Trollop::options do
+SUB_COMMANDS = %w(preview).freeze
+global_opts = Trollop.options do
   banner <<-EOS
 Static publishing to S3 based on SQS messages
 Usage:
@@ -30,10 +30,9 @@ end
 cmd = ARGV.shift # get the subcommand
 case cmd
 when nil
-  Rake::Task['alephant:preview:go'].invoke
+  Rake::Task["alephant:preview:go"].invoke
 when "update"
-  Rake::Task['alephant:preview:update'].invoke
+  Rake::Task["alephant:preview:update"].invoke
 else
-  Trollop::die "unknown subcommand #{cmd.inspect}"
+  Trollop.die "unknown subcommand #{cmd.inspect}"
 end
-
