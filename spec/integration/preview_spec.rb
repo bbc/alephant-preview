@@ -15,7 +15,9 @@ describe Alephant::Preview::Server do
         let (:fixture) { id }
         let (:region) { "page_region" }
 
-        specify { expect(last_response.body).to eq("topcontent\nbottom\n") }
+        specify { expect(last_response.body).to eq("top{\"content\":\"as json\"}bottom\n") }
+
+        specify { expect(last_response.headers["Content-Type"]).to eq("application/json") }
       end
     end
   end
@@ -32,7 +34,9 @@ describe Alephant::Preview::Server do
         let (:template) { id }
         let (:fixture) { id }
 
-        specify { expect(response).to eq("content") }
+        specify { expect(response).to eq("{\"content\":\"as json\"}") }
+
+        specify { expect(last_response.headers["Content-Type"]).to eq("application/json") }
       end
 
       context "with a data mapper" do
@@ -42,6 +46,8 @@ describe Alephant::Preview::Server do
           let (:fixture) { id }
 
           specify { expect(response).to eq("data mapped content") }
+
+          specify { expect(last_response.headers["Content-Type"]).to eq("text/html") }
         end
 
         context "using multiple fixtures" do
@@ -50,6 +56,8 @@ describe Alephant::Preview::Server do
           let (:fixture) { id }
 
           specify { expect(response).to eq("multiple endpoint data mapped content") }
+
+          specify { expect(last_response.headers["Content-Type"]).to eq("text/html") }
         end
       end
     end
@@ -71,10 +79,11 @@ describe Alephant::Preview::Server do
         expected = {
           :components => [
             {
-              :component => "foo",
-              :options   => {},
-              :status    => 200,
-              :body      => "content\n"
+              :component    => "foo",
+              :options      => {},
+              :status       => 200,
+              :body         => "{\"content\":\"as json\"}",
+              :content_type => "application/json"
             }
           ]
         }
@@ -91,10 +100,11 @@ describe Alephant::Preview::Server do
           expected = {
             :components => [
               {
-                :component => "bar",
-                :options   => {},
-                :status    => 200,
-                :body      => "data mapped content\n"
+                :component    => "bar",
+                :options      => {},
+                :status       => 200,
+                :body         => "data mapped content\n",
+                :content_type => "text/html"
               }
             ]
           }
@@ -110,10 +120,11 @@ describe Alephant::Preview::Server do
           expected = {
             :components => [
               {
-                :component => "baz",
-                :options   => {},
-                :status    => 200,
-                :body      => "multiple endpoint data mapped content\n"
+                :component    => "baz",
+                :options      => {},
+                :status       => 200,
+                :body         => "multiple endpoint data mapped content\n",
+                :content_type => "text/html"
               }
             ]
           }
@@ -147,10 +158,11 @@ describe Alephant::Preview::Server do
         expected = {
           :components => [
             {
-              :component => "foo",
-              :options   => {},
-              :status    => 200,
-              :body      => "content\n"
+              :component    => "foo",
+              :options      => {},
+              :status       => 200,
+              :body         => "{\"content\":\"as json\"}",
+              :content_type => "application/json"
             }
           ]
         }
@@ -165,10 +177,11 @@ describe Alephant::Preview::Server do
           expected = {
             :components => [
               {
-                :component => "bar",
-                :options   => {},
-                :status    => 200,
-                :body      => "data mapped content\n"
+                :component    => "bar",
+                :options      => {},
+                :status       => 200,
+                :body         => "data mapped content\n",
+                :content_type => "text/html"
               }
             ]
           }
@@ -182,10 +195,11 @@ describe Alephant::Preview::Server do
           expected = {
             :components => [
               {
-                :component => "baz",
-                :options   => {},
-                :status    => 200,
-                :body      => "multiple endpoint data mapped content\n"
+                :component    => "baz",
+                :options      => {},
+                :status       => 200,
+                :body         => "multiple endpoint data mapped content\n",
+                :content_type => "text/html"
               }
             ]
           }

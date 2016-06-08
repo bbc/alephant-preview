@@ -100,19 +100,39 @@ module Alephant
       end
 
       def render_component
-        view_mapper.generate(fixture_data)[template].render
+        view_mapper.generate(fixture_data)[template].render.tap do |content|
+          response["Content-Type"] = get_content_type(content)
+        end
       end
 
       def render_batch_component
+        content = render_component
+
         {
-          :component => template,
-          :options   => {},
-          :status    => 200,
-          :body      => render_component
+          :component    => template,
+          :options      => {},
+          :status       => 200,
+          :body         => content,
+          :content_type => get_content_type(content)
         }
       end
 
       private
+
+      def get_content_type(content)
+        if is_json?(content)
+          "application/json"
+        else
+          "text/html"
+        end
+      end
+
+      def is_json?(content)
+        JSON.parse(content)
+        true
+      rescue Exception => e
+        false
+      end
 
       def request_body
         JSON.parse(request.body.read, :symbolize_names => true) || {}
