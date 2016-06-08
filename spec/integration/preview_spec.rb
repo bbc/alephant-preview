@@ -6,8 +6,12 @@ describe Alephant::Preview::Server do
 
   describe "preview endpoint (GET /preview/{id}/{template}/{region}/{fixture})" do
     describe "content" do
+      expected_time = 123_456_789
+
       context "with valid data" do
         before(:each) do
+          allow(Time).to receive(:now).and_return(expected_time)
+
           get "/preview/#{id}/#{template}/#{region}/#{fixture}"
         end
         let (:id) { "foo" }
@@ -17,14 +21,26 @@ describe Alephant::Preview::Server do
 
         specify { expect(last_response.body).to eq("top{\"content\":\"as json\"}bottom\n") }
 
-        specify { expect(last_response.headers["Content-Type"]).to eq("application/json") }
+        expected_headers = {
+          "Content-Type"                => "application/json",
+          "Access-Control-Allow-Origin" => "*",
+          "X-Sequence"                  => expected_time,
+          "Content-Length"              => "31",
+          "X-Content-Type-Options"      => "nosniff"
+        }
+
+        specify { expect(last_response.headers).to eq(expected_headers) }
       end
     end
   end
 
   describe "component endpoint (GET /component/{id}/{template}/{fixture})" do
     describe "content" do
+      expected_time = 123_456_789
+
       before(:each) do
+        allow(Time).to receive(:now).and_return(expected_time)
+
         get "/component/#{id}/#{template}/#{fixture}"
       end
       let (:response) { last_response.body.chomp }
@@ -36,7 +52,15 @@ describe Alephant::Preview::Server do
 
         specify { expect(response).to eq("{\"content\":\"as json\"}") }
 
-        specify { expect(last_response.headers["Content-Type"]).to eq("application/json") }
+        expected_headers = {
+          "Content-Type"                => "application/json",
+          "Access-Control-Allow-Origin" => "*",
+          "X-Sequence"                  => expected_time,
+          "Content-Length"              => "21",
+          "X-Content-Type-Options"      => "nosniff"
+        }
+
+        specify { expect(last_response.headers).to eq(expected_headers) }
       end
 
       context "with a data mapper" do
@@ -47,7 +71,17 @@ describe Alephant::Preview::Server do
 
           specify { expect(response).to eq("data mapped content") }
 
-          specify { expect(last_response.headers["Content-Type"]).to eq("text/html") }
+          expected_headers = {
+            "Content-Type"                => "text/html",
+            "Access-Control-Allow-Origin" => "*",
+            "X-Sequence"                  => expected_time,
+            "Content-Length"              => "20",
+            "X-XSS-Protection"            => "1; mode=block",
+            "X-Content-Type-Options"      => "nosniff",
+            "X-Frame-Options"             => "SAMEORIGIN"
+          }
+
+          specify { expect(last_response.headers).to eq(expected_headers) }
         end
 
         context "using multiple fixtures" do
@@ -58,6 +92,18 @@ describe Alephant::Preview::Server do
           specify { expect(response).to eq("multiple endpoint data mapped content") }
 
           specify { expect(last_response.headers["Content-Type"]).to eq("text/html") }
+
+          expected_headers = {
+            "Content-Type"                => "text/html",
+            "Access-Control-Allow-Origin" => "*",
+            "X-Sequence"                  => expected_time,
+            "Content-Length"              => "38",
+            "X-XSS-Protection"            => "1; mode=block",
+            "X-Content-Type-Options"      => "nosniff",
+            "X-Frame-Options"             => "SAMEORIGIN"
+          }
+
+          specify { expect(last_response.headers).to eq(expected_headers) }
         end
       end
     end
@@ -65,7 +111,11 @@ describe Alephant::Preview::Server do
 
   describe 'component batch endpoint (GET /components/batch?components[#{id}]=#{id})' do
     describe "content" do
+      expected_time = 123_456_789
+
       before(:each) do
+        allow(Time).to receive(:now).and_return(expected_time)
+
         get "/components/batch?components[#{id}][component]=#{id}&components[#{id}][options][fixture]=#{id}"
       end
 
@@ -83,7 +133,8 @@ describe Alephant::Preview::Server do
               :options      => {},
               :status       => 200,
               :body         => "{\"content\":\"as json\"}",
-              :content_type => "application/json"
+              :content_type => "application/json",
+              :sequence_id  => expected_time
             }
           ]
         }
@@ -104,7 +155,8 @@ describe Alephant::Preview::Server do
                 :options      => {},
                 :status       => 200,
                 :body         => "data mapped content\n",
-                :content_type => "text/html"
+                :content_type => "text/html",
+                :sequence_id  => expected_time
               }
             ]
           }
@@ -124,7 +176,8 @@ describe Alephant::Preview::Server do
                 :options      => {},
                 :status       => 200,
                 :body         => "multiple endpoint data mapped content\n",
-                :content_type => "text/html"
+                :content_type => "text/html",
+                :sequence_id  => expected_time
               }
             ]
           }
@@ -137,7 +190,11 @@ describe Alephant::Preview::Server do
 
   describe "component batch endpoint (POST /components/batch" do
     describe "content" do
+      expected_time = 123_456_789
+
       before(:each) do
+        allow(Time).to receive(:now).and_return(expected_time)
+
         post "/components/batch", {
           :components => [
             {
@@ -162,7 +219,8 @@ describe Alephant::Preview::Server do
               :options      => {},
               :status       => 200,
               :body         => "{\"content\":\"as json\"}",
-              :content_type => "application/json"
+              :content_type => "application/json",
+              :sequence_id  => expected_time
             }
           ]
         }
@@ -181,7 +239,8 @@ describe Alephant::Preview::Server do
                 :options      => {},
                 :status       => 200,
                 :body         => "data mapped content\n",
-                :content_type => "text/html"
+                :content_type => "text/html",
+                :sequence_id  => expected_time
               }
             ]
           }
@@ -199,7 +258,8 @@ describe Alephant::Preview::Server do
                 :options      => {},
                 :status       => 200,
                 :body         => "multiple endpoint data mapped content\n",
-                :content_type => "text/html"
+                :content_type => "text/html",
+                :sequence_id  => expected_time
               }
             ]
           }

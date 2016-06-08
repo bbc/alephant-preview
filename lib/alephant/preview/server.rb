@@ -32,16 +32,23 @@ module Alephant
       end
 
       get "/preview/:id/:template/:region/?:fixture?" do
+        response["X-Sequence"] = Time.now.to_i
+
         render_preview
       end
 
       get "/component/:template/?:fixture?" do
         params["id"] = find_id_from_template params["template"]
         params["fixture"] = "responsive" unless params["fixture"]
+
+        response["X-Sequence"] = Time.now.to_i
+
         render_component
       end
 
       get "/component/:id/:template/?:fixture?" do
+        response["X-Sequence"] = Time.now.to_i
+
         render_component
       end
 
@@ -113,7 +120,8 @@ module Alephant
           :options      => {},
           :status       => 200,
           :body         => content,
-          :content_type => get_content_type(content)
+          :content_type => get_content_type(content),
+          :sequence_id  => Time.now.to_i
         }
       end
 
