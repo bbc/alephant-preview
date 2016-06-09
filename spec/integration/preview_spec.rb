@@ -19,17 +19,20 @@ describe Alephant::Preview::Server do
         let (:fixture) { id }
         let (:region) { "page_region" }
 
-        specify { expect(last_response.body).to eq(%(top{"content":"as json"}bottom\n)) }
+        it "should return correct response" do
+          expect(last_response.body).to eq(%(top{"content":"as json"}bottom\n))
+        end
 
         expected_headers = {
           "Content-Type"                => "application/json",
           "Access-Control-Allow-Origin" => "*",
           "X-Sequence"                  => expected_time,
-          "Content-Length"              => "31",
-          "X-Content-Type-Options"      => "nosniff"
+          "Content-Length"              => "31"
         }
 
-        specify { expect(last_response.headers).to eq(expected_headers) }
+        it "should have correct response headers" do
+          expect(last_response.headers).to include(expected_headers)
+        end
       end
     end
   end
@@ -50,17 +53,20 @@ describe Alephant::Preview::Server do
         let (:template) { id }
         let (:fixture) { id }
 
-        specify { expect(response).to eq(%({"content":"as json"})) }
+        it "should return correct response" do
+          expect(response).to eq(%({"content":"as json"}))
+        end
 
         expected_headers = {
           "Content-Type"                => "application/json",
           "Access-Control-Allow-Origin" => "*",
           "X-Sequence"                  => expected_time,
-          "Content-Length"              => "21",
-          "X-Content-Type-Options"      => "nosniff"
+          "Content-Length"              => "21"
         }
 
-        specify { expect(last_response.headers).to eq(expected_headers) }
+        it "should have correct response headers" do
+          expect(last_response.headers).to include(expected_headers)
+        end
       end
 
       context "with a data mapper" do
@@ -75,13 +81,12 @@ describe Alephant::Preview::Server do
             "Content-Type"                => "text/html",
             "Access-Control-Allow-Origin" => "*",
             "X-Sequence"                  => expected_time,
-            "Content-Length"              => "20",
-            "X-XSS-Protection"            => "1; mode=block",
-            "X-Content-Type-Options"      => "nosniff",
-            "X-Frame-Options"             => "SAMEORIGIN"
+            "Content-Length"              => "20"
           }
 
-          specify { expect(last_response.headers).to eq(expected_headers) }
+          it "should have correct response headers" do
+            expect(last_response.headers).to include(expected_headers)
+          end
         end
 
         context "using multiple fixtures" do
@@ -97,13 +102,12 @@ describe Alephant::Preview::Server do
             "Content-Type"                => "text/html",
             "Access-Control-Allow-Origin" => "*",
             "X-Sequence"                  => expected_time,
-            "Content-Length"              => "38",
-            "X-XSS-Protection"            => "1; mode=block",
-            "X-Content-Type-Options"      => "nosniff",
-            "X-Frame-Options"             => "SAMEORIGIN"
+            "Content-Length"              => "38"
           }
 
-          specify { expect(last_response.headers).to eq(expected_headers) }
+          it "should have correct response headers" do
+            expect(last_response.headers).to include(expected_headers)
+          end
         end
       end
     end
@@ -139,7 +143,9 @@ describe Alephant::Preview::Server do
           ]
         }
 
-        specify { expect(response).to eq(expected) }
+        it "should return correct response" do
+          expect(response).to eq(expected)
+        end
       end
 
       context "with a data mapper" do
@@ -161,7 +167,9 @@ describe Alephant::Preview::Server do
             ]
           }
 
-          specify { expect(response).to eq(expected) }
+          it "should return correct response" do
+            expect(response).to eq(expected)
+          end
         end
 
         context "using multiple fixtures" do
@@ -182,7 +190,9 @@ describe Alephant::Preview::Server do
             ]
           }
 
-          specify { expect(response).to eq(expected) }
+          it "should return correct response" do
+            expect(response).to eq(expected)
+          end
         end
       end
     end
@@ -225,7 +235,9 @@ describe Alephant::Preview::Server do
           ]
         }
 
-        specify { expect(response).to eq(expected) }
+        it "should return correct response" do
+          expect(response).to eq(expected)
+        end
       end
 
       context "with a data mapper" do
@@ -245,7 +257,9 @@ describe Alephant::Preview::Server do
             ]
           }
 
-          specify { expect(response).to eq(expected) }
+          it "should return correct response" do
+            expect(response).to eq(expected)
+          end
         end
 
         context "using multiple fixtures" do
@@ -264,7 +278,9 @@ describe Alephant::Preview::Server do
             ]
           }
 
-          specify { expect(response).to eq(expected) }
+          it "should return correct response" do
+            expect(response).to eq(expected)
+          end
         end
       end
     end
@@ -276,7 +292,9 @@ describe Alephant::Preview::Server do
     end
 
     context "status code" do
-      specify { expect(last_response.status).to eq 200 }
+      it "should return ok status code" do
+        expect(last_response.status).to eq(200)
+      end
     end
   end
 end
