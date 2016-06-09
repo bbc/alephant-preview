@@ -6,7 +6,7 @@ describe Alephant::Preview::Server do
 
   describe "preview endpoint (GET /preview/{id}/{template}/{region}/{fixture})" do
     describe "content" do
-      expected_time = 123_456_789
+      expected_time = "123456789"
 
       context "with valid data" do
         before(:each) do
@@ -39,7 +39,7 @@ describe Alephant::Preview::Server do
 
   describe "component endpoint (GET /component/{id}/{template}/{fixture})" do
     describe "content" do
-      expected_time = 123_456_789
+      expected_time = "123456789"
 
       before(:each) do
         allow(Time).to receive(:now).and_return(expected_time)
@@ -117,7 +117,7 @@ describe Alephant::Preview::Server do
 
   describe 'component batch endpoint (GET /components/batch?components[#{id}]=#{id})' do
     describe "content" do
-      expected_time = 123_456_789
+      expected_time = "123456789"
 
       before(:each) do
         allow(Time).to receive(:now).and_return(expected_time)
@@ -202,7 +202,7 @@ describe Alephant::Preview::Server do
 
   describe "component batch endpoint (POST /components/batch" do
     describe "content" do
-      expected_time = 123_456_789
+      expected_time = "123456789"
 
       before(:each) do
         allow(Time).to receive(:now).and_return(expected_time)
