@@ -75,7 +75,9 @@ describe Alephant::Preview::Server do
           let (:template) { id }
           let (:fixture) { id }
 
-          specify { expect(response).to eq("data mapped content") }
+          it "should return data mapped content" do
+            expect(response).to eq("data mapped content")
+          end
 
           expected_headers = {
             "Content-Type"                => "text/html",
@@ -94,9 +96,9 @@ describe Alephant::Preview::Server do
           let (:template) { id }
           let (:fixture) { id }
 
-          specify { expect(response).to eq("multiple endpoint data mapped content") }
-
-          specify { expect(last_response.headers["Content-Type"]).to eq("text/html") }
+          it "should return multiple mapped content" do
+            expect(response).to eq("multiple endpoint data mapped content")
+          end
 
           expected_headers = {
             "Content-Type"                => "text/html",
