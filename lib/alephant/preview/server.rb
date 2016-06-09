@@ -32,7 +32,7 @@ module Alephant
       end
 
       get "/preview/:id/:template/:region/?:fixture?" do
-        response["X-Sequence"] = Time.now.to_i
+        response["X-Sequence"] = sequence_id
 
         render_preview
       end
@@ -41,13 +41,13 @@ module Alephant
         params["id"] = find_id_from_template params["template"]
         params["fixture"] = "responsive" unless params["fixture"]
 
-        response["X-Sequence"] = Time.now.to_i
+        response["X-Sequence"] = sequence_id
 
         render_component
       end
 
       get "/component/:id/:template/?:fixture?" do
-        response["X-Sequence"] = Time.now.to_i
+        response["X-Sequence"] = sequence_id
 
         render_component
       end
@@ -121,24 +121,24 @@ module Alephant
           :status       => 200,
           :body         => content,
           :content_type => get_content_type(content),
-          :sequence_id  => Time.now.to_i
+          :sequence_id  => sequence_id
         }
       end
 
       private
 
+      def sequence_id
+        Time.now.to_i
+      end
+
       def get_content_type(content)
-        if is_json?(content)
-          "application/json"
-        else
-          "text/html"
-        end
+        return "application/json" if is_json?(content)
+        "text/html"
       end
 
       def is_json?(content)
-        JSON.parse(content)
-        true
-      rescue Exception => e
+        JSON.parse(content) && true
+      rescue Exception
         false
       end
 

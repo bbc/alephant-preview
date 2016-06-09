@@ -19,7 +19,7 @@ describe Alephant::Preview::Server do
         let (:fixture) { id }
         let (:region) { "page_region" }
 
-        specify { expect(last_response.body).to eq("top{\"content\":\"as json\"}bottom\n") }
+        specify { expect(last_response.body).to eq(%(top{"content":"as json"}bottom\n)) }
 
         expected_headers = {
           "Content-Type"                => "application/json",
@@ -50,7 +50,7 @@ describe Alephant::Preview::Server do
         let (:template) { id }
         let (:fixture) { id }
 
-        specify { expect(response).to eq("{\"content\":\"as json\"}") }
+        specify { expect(response).to eq(%({"content":"as json"})) }
 
         expected_headers = {
           "Content-Type"                => "application/json",
@@ -132,7 +132,7 @@ describe Alephant::Preview::Server do
               :component    => "foo",
               :options      => {},
               :status       => 200,
-              :body         => "{\"content\":\"as json\"}",
+              :body         => %({"content":"as json"}),
               :content_type => "application/json",
               :sequence_id  => expected_time
             }
@@ -218,7 +218,7 @@ describe Alephant::Preview::Server do
               :component    => "foo",
               :options      => {},
               :status       => 200,
-              :body         => "{\"content\":\"as json\"}",
+              :body         => %({"content":"as json"}),
               :content_type => "application/json",
               :sequence_id  => expected_time
             }
