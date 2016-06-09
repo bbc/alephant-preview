@@ -32,16 +32,23 @@ module Alephant
       end
 
       get "/preview/:id/:template/:region/?:fixture?" do
+        response["X-Sequence"] = sequence_id
+
         render_preview
       end
 
       get "/component/:template/?:fixture?" do
         params["id"] = find_id_from_template params["template"]
         params["fixture"] = "responsive" unless params["fixture"]
+
+        response["X-Sequence"] = sequence_id
+
         render_component
       end
 
       get "/component/:id/:template/?:fixture?" do
+        response["X-Sequence"] = sequence_id
+
         render_component
       end
 
@@ -100,19 +107,40 @@ module Alephant
       end
 
       def render_component
-        view_mapper.generate(fixture_data)[template].render
+        view_mapper.generate(fixture_data)[template].render.tap do |content|
+          response["Content-Type"] = get_content_type(content)
+        end
       end
 
       def render_batch_component
+        content = render_component
+
         {
-          :component => template,
-          :options   => {},
-          :status    => 200,
-          :body      => render_component
+          :component    => template,
+          :options      => {},
+          :status       => 200,
+          :body         => content,
+          :content_type => get_content_type(content),
+          :sequence_id  => sequence_id
         }
       end
 
       private
+
+      def sequence_id
+        Time.now.to_i
+      end
+
+      def get_content_type(content)
+        return "application/json" if is_json?(content)
+        "text/html"
+      end
+
+      def is_json?(content)
+        JSON.parse(content) && true
+      rescue Exception
+        false
+      end
 
       def request_body
         JSON.parse(request.body.read, :symbolize_names => true) || {}

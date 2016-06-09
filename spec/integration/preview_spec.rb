@@ -6,8 +6,12 @@ describe Alephant::Preview::Server do
 
   describe "preview endpoint (GET /preview/{id}/{template}/{region}/{fixture})" do
     describe "content" do
+      expected_time = 123_456_789
+
       context "with valid data" do
         before(:each) do
+          allow(Time).to receive(:now).and_return(expected_time)
+
           get "/preview/#{id}/#{template}/#{region}/#{fixture}"
         end
         let (:id) { "foo" }
@@ -15,14 +19,31 @@ describe Alephant::Preview::Server do
         let (:fixture) { id }
         let (:region) { "page_region" }
 
-        specify { expect(last_response.body).to eq("topcontent\nbottom\n") }
+        it "should return correct response" do
+          expect(last_response.body).to eq(%(top{"content":"as json"}bottom\n))
+        end
+
+        expected_headers = {
+          "Content-Type"                => "application/json",
+          "Access-Control-Allow-Origin" => "*",
+          "X-Sequence"                  => expected_time,
+          "Content-Length"              => "31"
+        }
+
+        it "should have correct response headers" do
+          expect(last_response.headers).to include(expected_headers)
+        end
       end
     end
   end
 
   describe "component endpoint (GET /component/{id}/{template}/{fixture})" do
     describe "content" do
+      expected_time = 123_456_789
+
       before(:each) do
+        allow(Time).to receive(:now).and_return(expected_time)
+
         get "/component/#{id}/#{template}/#{fixture}"
       end
       let (:response) { last_response.body.chomp }
@@ -32,7 +53,20 @@ describe Alephant::Preview::Server do
         let (:template) { id }
         let (:fixture) { id }
 
-        specify { expect(response).to eq("content") }
+        it "should return correct response" do
+          expect(response).to eq(%({"content":"as json"}))
+        end
+
+        expected_headers = {
+          "Content-Type"                => "application/json",
+          "Access-Control-Allow-Origin" => "*",
+          "X-Sequence"                  => expected_time,
+          "Content-Length"              => "21"
+        }
+
+        it "should have correct response headers" do
+          expect(last_response.headers).to include(expected_headers)
+        end
       end
 
       context "with a data mapper" do
@@ -41,7 +75,20 @@ describe Alephant::Preview::Server do
           let (:template) { id }
           let (:fixture) { id }
 
-          specify { expect(response).to eq("data mapped content") }
+          it "should return data mapped content" do
+            expect(response).to eq("data mapped content")
+          end
+
+          expected_headers = {
+            "Content-Type"                => "text/html",
+            "Access-Control-Allow-Origin" => "*",
+            "X-Sequence"                  => expected_time,
+            "Content-Length"              => "20"
+          }
+
+          it "should have correct response headers" do
+            expect(last_response.headers).to include(expected_headers)
+          end
         end
 
         context "using multiple fixtures" do
@@ -49,7 +96,20 @@ describe Alephant::Preview::Server do
           let (:template) { id }
           let (:fixture) { id }
 
-          specify { expect(response).to eq("multiple endpoint data mapped content") }
+          it "should return multiple mapped content" do
+            expect(response).to eq("multiple endpoint data mapped content")
+          end
+
+          expected_headers = {
+            "Content-Type"                => "text/html",
+            "Access-Control-Allow-Origin" => "*",
+            "X-Sequence"                  => expected_time,
+            "Content-Length"              => "38"
+          }
+
+          it "should have correct response headers" do
+            expect(last_response.headers).to include(expected_headers)
+          end
         end
       end
     end
@@ -57,7 +117,11 @@ describe Alephant::Preview::Server do
 
   describe 'component batch endpoint (GET /components/batch?components[#{id}]=#{id})' do
     describe "content" do
+      expected_time = 123_456_789
+
       before(:each) do
+        allow(Time).to receive(:now).and_return(expected_time)
+
         get "/components/batch?components[#{id}][component]=#{id}&components[#{id}][options][fixture]=#{id}"
       end
 
@@ -71,15 +135,19 @@ describe Alephant::Preview::Server do
         expected = {
           :components => [
             {
-              :component => "foo",
-              :options   => {},
-              :status    => 200,
-              :body      => "content\n"
+              :component    => "foo",
+              :options      => {},
+              :status       => 200,
+              :body         => %({"content":"as json"}),
+              :content_type => "application/json",
+              :sequence_id  => expected_time
             }
           ]
         }
 
-        specify { expect(response).to eq(expected) }
+        it "should return correct response" do
+          expect(response).to eq(expected)
+        end
       end
 
       context "with a data mapper" do
@@ -91,15 +159,19 @@ describe Alephant::Preview::Server do
           expected = {
             :components => [
               {
-                :component => "bar",
-                :options   => {},
-                :status    => 200,
-                :body      => "data mapped content\n"
+                :component    => "bar",
+                :options      => {},
+                :status       => 200,
+                :body         => "data mapped content\n",
+                :content_type => "text/html",
+                :sequence_id  => expected_time
               }
             ]
           }
 
-          specify { expect(response).to eq(expected) }
+          it "should return correct response" do
+            expect(response).to eq(expected)
+          end
         end
 
         context "using multiple fixtures" do
@@ -110,15 +182,19 @@ describe Alephant::Preview::Server do
           expected = {
             :components => [
               {
-                :component => "baz",
-                :options   => {},
-                :status    => 200,
-                :body      => "multiple endpoint data mapped content\n"
+                :component    => "baz",
+                :options      => {},
+                :status       => 200,
+                :body         => "multiple endpoint data mapped content\n",
+                :content_type => "text/html",
+                :sequence_id  => expected_time
               }
             ]
           }
 
-          specify { expect(response).to eq(expected) }
+          it "should return correct response" do
+            expect(response).to eq(expected)
+          end
         end
       end
     end
@@ -126,7 +202,11 @@ describe Alephant::Preview::Server do
 
   describe "component batch endpoint (POST /components/batch" do
     describe "content" do
+      expected_time = 123_456_789
+
       before(:each) do
+        allow(Time).to receive(:now).and_return(expected_time)
+
         post "/components/batch", {
           :components => [
             {
@@ -147,15 +227,19 @@ describe Alephant::Preview::Server do
         expected = {
           :components => [
             {
-              :component => "foo",
-              :options   => {},
-              :status    => 200,
-              :body      => "content\n"
+              :component    => "foo",
+              :options      => {},
+              :status       => 200,
+              :body         => %({"content":"as json"}),
+              :content_type => "application/json",
+              :sequence_id  => expected_time
             }
           ]
         }
 
-        specify { expect(response).to eq(expected) }
+        it "should return correct response" do
+          expect(response).to eq(expected)
+        end
       end
 
       context "with a data mapper" do
@@ -165,15 +249,19 @@ describe Alephant::Preview::Server do
           expected = {
             :components => [
               {
-                :component => "bar",
-                :options   => {},
-                :status    => 200,
-                :body      => "data mapped content\n"
+                :component    => "bar",
+                :options      => {},
+                :status       => 200,
+                :body         => "data mapped content\n",
+                :content_type => "text/html",
+                :sequence_id  => expected_time
               }
             ]
           }
 
-          specify { expect(response).to eq(expected) }
+          it "should return correct response" do
+            expect(response).to eq(expected)
+          end
         end
 
         context "using multiple fixtures" do
@@ -182,15 +270,19 @@ describe Alephant::Preview::Server do
           expected = {
             :components => [
               {
-                :component => "baz",
-                :options   => {},
-                :status    => 200,
-                :body      => "multiple endpoint data mapped content\n"
+                :component    => "baz",
+                :options      => {},
+                :status       => 200,
+                :body         => "multiple endpoint data mapped content\n",
+                :content_type => "text/html",
+                :sequence_id  => expected_time
               }
             ]
           }
 
-          specify { expect(response).to eq(expected) }
+          it "should return correct response" do
+            expect(response).to eq(expected)
+          end
         end
       end
     end
@@ -202,7 +294,9 @@ describe Alephant::Preview::Server do
     end
 
     context "status code" do
-      specify { expect(last_response.status).to eq 200 }
+      it "should return ok status code" do
+        expect(last_response.status).to eq(200)
+      end
     end
   end
 end
