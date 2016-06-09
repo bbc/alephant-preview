@@ -128,7 +128,7 @@ module Alephant
       private
 
       def sequence_id
-        Time.now.to_s
+        Time.now.to_i.to_s
       end
 
       def get_content_type(content)
