@@ -91,7 +91,7 @@ module Alephant
 
       def find_id_from_template(template)
         files = Dir.glob(BASE_LOCATION + "/**/models/*")
-        file = files.select! { |file| file.include? "/#{template}.rb" }.pop
+        file = files.select { |file| file.include? "/#{template}.rb" }.pop
 
         halt(404) if file.nil?
 
