@@ -1,96 +1,98 @@
-require "alephant/renderer/views/html"
-require "alephant/renderer/views/json"
-require "alephant/renderer/view_mapper"
-require "alephant/publisher/request/data_mapper_factory"
-require "alephant/publisher/request/data_mapper"
-require "alephant/publisher/request/error"
+require 'alephant/renderer/views/html'
+require 'alephant/renderer/views/json'
+require 'alephant/renderer/view_mapper'
+require 'alephant/publisher/request/data_mapper_factory'
+require 'alephant/publisher/request/data_mapper'
+require 'alephant/publisher/request/error'
 
-require "alephant/support/parser"
-require "alephant/preview/fixture_loader"
-require "alephant/preview/template/base"
+require 'alephant/support/parser'
+require 'alephant/preview/fixture_loader'
+require 'alephant/preview/template/base'
 
-require "sinatra/base"
-require "sinatra/reloader"
-require "faraday"
-require "json"
-require "uri"
+require 'sinatra/base'
+require 'sinatra/reloader'
+require 'faraday'
+require 'json'
+require 'uri'
 
 module Alephant
   module Preview
     class Server < Sinatra::Base
-      set :bind, "0.0.0.0"
+      set :bind, '0.0.0.0'
+      port = ENV['PORT'] || 4567
+      set :port, port
 
       register Sinatra::Reloader
-      also_reload "components/*/models/*.rb"
-      also_reload "components/*/mapper.rb"
-      also_reload "components/shared/mappers/*.rb"
+      also_reload 'components/*/models/*.rb'
+      also_reload 'components/*/mapper.rb'
+      also_reload 'components/shared/mappers/*.rb'
 
       BASE_LOCATION = "#{(ENV['BASE_LOCATION'] || Dir.pwd)}/components".freeze
 
       before do
-        response["Access-Control-Allow-Origin"] = "*"
+        response['Access-Control-Allow-Origin'] = '*'
       end
 
-      get "/preview/:id/:template/:region/?:fixture?" do
-        response["X-Sequence"] = sequence_id
+      get '/preview/:id/:template/:region/?:fixture?' do
+        response['X-Sequence'] = sequence_id
 
         render_preview
       end
 
-      get "/component/:template/?:fixture?" do
-        params["id"] = find_id_from_template params["template"]
-        params["fixture"] = "responsive" unless params["fixture"]
+      get '/component/:template/?:fixture?' do
+        params['id'] = find_id_from_template params['template']
+        params['fixture'] = 'responsive' unless params['fixture']
 
-        response["X-Sequence"] = sequence_id
-
-        render_component
-      end
-
-      get "/component/:id/:template/?:fixture?" do
-        response["X-Sequence"] = sequence_id
+        response['X-Sequence'] = sequence_id
 
         render_component
       end
 
-      get "/components/batch" do
+      get '/component/:id/:template/?:fixture?' do
+        response['X-Sequence'] = sequence_id
+
+        render_component
+      end
+
+      get '/components/batch' do
         batch_components = []
 
         get_batched_components.each do |component|
           component = component[1]
-          options = component.fetch("options", {})
-          params["template"] = component.fetch("component")
-          params["id"] = find_id_from_template params["template"]
-          params["fixture"] = options.fetch("fixture", "responsive") || "responsive"
+          options = component.fetch('options', {})
+          params['template'] = component.fetch('component')
+          params['id'] = find_id_from_template params['template']
+          params['fixture'] = options.fetch('fixture', 'responsive') || 'responsive'
           batch_components << render_batch_component
         end
 
-        { :components => batch_components }.to_json
+        { components: batch_components }.to_json
       end
 
-      post "/components/batch" do
+      post '/components/batch' do
         batch_components = []
 
         post_batched_components.each do |component|
           options = symbolize component.fetch(:options, {})
-          params["template"] = component.fetch(:component)
-          params["id"] = find_id_from_template params["template"]
-          params["fixture"] = options.fetch(:fixture, "responsive") || "responsive"
+          params['template'] = component.fetch(:component)
+          params['id'] = find_id_from_template params['template']
+          params['fixture'] = options.fetch(:fixture, 'responsive') || 'responsive'
           batch_components << render_batch_component
         end
 
-        { :components => batch_components }.to_json
+        { components: batch_components }.to_json
       end
 
-      get "/status" do
-        "ok"
+      get '/status' do
+        'ok'
       end
 
       not_found do
-        "Not found"
+        'Not found'
       end
 
       def find_id_from_template(template)
-        files = Dir.glob(BASE_LOCATION + "/**/models/*")
+        files = Dir.glob(BASE_LOCATION + '/**/models/*')
         file = files.select { |file| file.include? "/#{template}.rb" }.pop
 
         halt(404) if file.nil?
@@ -108,7 +110,7 @@ module Alephant
 
       def render_component
         view_mapper.generate(fixture_data)[template].render.tap do |content|
-          response["Content-Type"] = get_content_type(content)
+          response['Content-Type'] = get_content_type(content)
         end
       end
 
@@ -116,12 +118,12 @@ module Alephant
         content = render_component
 
         {
-          :component    => template,
-          :options      => {},
-          :status       => 200,
-          :body         => content,
-          :content_type => get_content_type(content),
-          :sequence_id  => sequence_id
+          component:    template,
+          options:      {},
+          status:       200,
+          body:         content,
+          content_type: get_content_type(content),
+          sequence_id:  sequence_id
         }
       end
 
@@ -132,8 +134,8 @@ module Alephant
       end
 
       def get_content_type(content)
-        return "application/json" if is_json?(content)
-        "text/html"
+        return 'application/json' if is_json?(content)
+        'text/html'
       end
 
       def is_json?(content)
@@ -143,7 +145,7 @@ module Alephant
       end
 
       def request_body
-        JSON.parse(request.body.read, :symbolize_names => true) || {}
+        JSON.parse(request.body.read, symbolize_names: true) || {}
       end
 
       def query_string
@@ -155,7 +157,7 @@ module Alephant
       end
 
       def get_batched_components
-        query_string.fetch("components", [])
+        query_string.fetch('components', [])
       end
 
       def model
@@ -168,23 +170,23 @@ module Alephant
       end
 
       def model_location
-        File.join(base_path, "models", "#{template}.rb")
+        File.join(base_path, 'models', "#{template}.rb")
       end
 
       def template
-        params["template"]
+        params['template']
       end
 
       def region
-        params["region"]
+        params['region']
       end
 
       def id
-        params["id"]
+        params['id']
       end
 
       def fixture
-        params["fixture"] || id
+        params['fixture'] || id
       end
 
       def fixture_data
