@@ -10,8 +10,8 @@ module Alephant
 
       def get(_uri)
         OpenStruct.new(
-          :status => 200,
-          :body   => fixture
+          status: 200,
+          body:   fixture
         )
       end
 

@@ -1,4 +1,4 @@
-require "mustache"
+require 'mustache'
 
 module Alephant
   module Preview
@@ -12,7 +12,7 @@ module Alephant
         end
 
         def static_host
-          ENV["STATIC_HOST"] || "localhost:8000"
+          ENV['STATIC_HOST'] || 'localhost:8000'
         end
 
         def method_missing(name, *args, &block)
