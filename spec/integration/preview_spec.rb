@@ -115,6 +115,27 @@ describe Alephant::Preview::Server do
     end
   end
 
+  describe 'component endpoint (GET /component/{id}) with Referer header' do
+    describe 'content' do
+      before(:each) do
+        header 'Referer', 'http://www.bbc.co.uk'
+        get "/component/#{id}/#{template}/#{fixture}"
+      end
+
+      let (:id) { 'foo' }
+      let (:template) { id }
+      let (:fixture) { id }
+
+      it 'should return correct response' do
+        expect(last_response.body.chomp).to eq(%({"content":"as json"}))
+      end
+
+      it 'should return correct status' do
+        expect(last_response.status).to eq(200)
+      end
+    end
+  end
+
   describe 'component batch endpoint (GET /components/batch?components[#{id}]=#{id})' do
     describe 'content' do
       expected_time = '123456789'
