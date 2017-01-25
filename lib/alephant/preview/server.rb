@@ -21,6 +21,7 @@ module Alephant
       set :bind, '0.0.0.0'
       port = ENV['PORT'] || 4567
       set :port, port
+      set :protection, except: :json_csrf
 
       register Sinatra::Reloader
       also_reload 'components/*/models/*.rb'
